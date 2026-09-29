@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-md mx-auto px-4 py-24 text-center space-y-6">
+    <div class="w-20 h-20 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center mx-auto text-4xl shadow-inner">
+        <i class="fa-solid fa-mug-saucer"></i>
+    </div>
+    <span class="text-xs font-bold uppercase tracking-widest text-amber-700">Error 404</span>
+    <h1 class="text-3xl sm:text-4xl font-serif font-bold text-coffee-950">Cup Spilled! Page Not Found</h1>
+    <p class="text-sm text-stone-500">
+        The coffee roast or page you were looking for doesn't exist or has moved. Let's get you back to warm coffee.
+    </p>
+    <div class="pt-2">
+        <a href="{% url 'home' %}" class="inline-flex items-center px-6 py-3.5 rounded-2xl bg-coffee-800 hover:bg-coffee-900 text-white font-bold text-sm shadow transition">
+            <i class="fa-solid fa-house mr-2"></i> Return to Homepage
+        </a>
+    </div>
+</div>
+{% endblock %}

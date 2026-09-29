@@ -1,0 +1,373 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if title %}{{ title }} | Modern Coffee Shop{% else %}Modern Coffee Shop | Handcrafted Coffee & Pastries{% endif %}</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Tailwind CSS with Custom Coffee Palette -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coffee: {
+                            50: '#fdfbf7',
+                            100: '#f6f0e7',
+                            200: '#eddccb',
+                            300: '#e0c2a7',
+                            400: '#cfa280',
+                            500: '#b8815b',
+                            600: '#9d6745',
+                            700: '#7e4f35',
+                            800: '#5a3726',
+                            900: '#382218',
+                            950: '#20120c',
+                        },
+                        amberbrand: '#d97706',
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Smooth scrolling and custom scrollbar */
+        html {
+            scroll-behavior: smooth;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fdfbf7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cfa280;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9d6745;
+        }
+        .hero-pattern {
+            background-color: #20120c;
+            background-image: radial-gradient(#382218 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+    </style>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="flex flex-col min-h-screen bg-coffee-50 text-stone-800 antialiased font-sans">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-coffee-950 text-coffee-200 text-xs py-2 px-4 border-b border-coffee-800">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center space-x-3">
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    <i class="fa-solid fa-sparkles mr-1.5 text-[10px]"></i> Loyalty Rewards
+                </span>
+                <span>Earn <strong>10 Points</strong> for every Rs. 100 spent! Free pickup & counter pay available.</span>
+            </div>
+            <div class="hidden md:flex items-center space-x-5 text-stone-400">
+                <span><i class="fa-solid fa-clock mr-1 text-coffee-400"></i> Open Daily: 7:00 AM – 10:00 PM</span>
+                <span><i class="fa-solid fa-location-dot mr-1 text-coffee-400"></i> Kathmandu, Nepal</span>
+                <span><i class="fa-solid fa-phone mr-1 text-coffee-400"></i> +977-1-4567890</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-sm transition">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Brand Logo -->
+            <a href="{% url 'home' %}" class="flex items-center space-x-3 group">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-coffee-800 to-coffee-950 flex items-center justify-center text-amber-400 shadow-md group-hover:scale-105 transition-transform duration-300">
+                    <i class="fa-solid fa-mug-hot text-xl"></i>
+                </div>
+                <div>
+                    <span class="text-xl sm:text-2xl font-serif font-bold text-coffee-950 tracking-tight group-hover:text-coffee-700 transition">Modern Coffee</span>
+                    <span class="block text-[10px] font-bold uppercase tracking-widest text-amber-700 -mt-1">Shop & Roastery</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <div class="hidden lg:flex items-center space-x-8 font-medium text-stone-700">
+                <a href="{% url 'home' %}" class="hover:text-coffee-700 transition py-1 {% if request.resolver_match.url_name == 'home' %}text-coffee-800 font-semibold border-b-2 border-coffee-700{% endif %}">Home</a>
+                <a href="{% url 'products:list' %}" class="hover:text-coffee-700 transition py-1 {% if 'menu' in request.path %}text-coffee-800 font-semibold border-b-2 border-coffee-700{% endif %}">Coffee Menu</a>
+                <a href="{% url 'about' %}" class="hover:text-coffee-700 transition py-1 {% if request.resolver_match.url_name == 'about' %}text-coffee-800 font-semibold border-b-2 border-coffee-700{% endif %}">About Us</a>
+                <a href="{% url 'contact' %}" class="hover:text-coffee-700 transition py-1 {% if request.resolver_match.url_name == 'contact' %}text-coffee-800 font-semibold border-b-2 border-coffee-700{% endif %}">Contact</a>
+                
+                {% if user.is_authenticated %}
+                <a href="{% url 'loyalty:rewards' %}" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition shadow-sm">
+                    <i class="fa-solid fa-award mr-1.5 text-amber-600"></i>
+                    Rewards: <span class="ml-1 text-coffee-900 font-bold">{{ user_loyalty_points }} pts</span>
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Right Action Items -->
+            <div class="flex items-center space-x-3 sm:space-x-4">
+                
+                <!-- Cart Icon with Live Badge -->
+                <a href="{% url 'orders:cart_detail' %}" class="relative p-2.5 rounded-xl text-stone-700 hover:text-coffee-800 hover:bg-coffee-100/60 transition group" title="Shopping Cart">
+                    <i class="fa-solid fa-bag-shopping text-xl group-hover:scale-110 transition-transform"></i>
+                    {% if cart_count > 0 %}
+                    <span class="absolute -top-1 -right-1 bg-amber-600 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-md animate-pulse">
+                        {{ cart_count }}
+                    </span>
+                    {% endif %}
+                </a>
+
+                <!-- Staff / Admin Quick Link -->
+                {% if user.is_staff %}
+                <a href="{% url 'dashboard:admin_overview' %}" class="hidden sm:inline-flex items-center px-3 py-1.5 rounded-xl bg-coffee-900 text-amber-400 text-xs font-semibold hover:bg-coffee-950 transition border border-amber-500/30 shadow-sm" title="Owner Admin Dashboard">
+                    <i class="fa-solid fa-chart-line mr-1.5"></i> Staff Portal
+                </a>
+                {% endif %}
+
+                <!-- Customer Authentication Links -->
+                {% if user.is_authenticated %}
+                <div class="relative group">
+                    <button class="flex items-center space-x-2 p-1.5 rounded-xl hover:bg-stone-100 transition focus:outline-none">
+                        <div class="w-9 h-9 rounded-full bg-coffee-700 text-white font-bold flex items-center justify-center text-sm shadow">
+                            {{ user.first_name|default:user.username|make_list|first|upper }}
+                        </div>
+                        <span class="hidden md:inline-block font-semibold text-sm text-stone-800 max-w-[120px] truncate">
+                            {{ user.first_name|default:user.username }}
+                        </span>
+                        <i class="fa-solid fa-chevron-down text-xs text-stone-400 group-hover:text-stone-700 transition"></i>
+                    </button>
+                    <!-- Dropdown Menu -->
+                    <div class="absolute right-0 mt-1 w-56 bg-white rounded-2xl shadow-xl border border-stone-200 py-2 hidden group-hover:block hover:block z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                        <div class="px-4 py-2.5 border-b border-stone-100">
+                            <p class="text-xs text-stone-500">Signed in as</p>
+                            <p class="text-sm font-bold text-stone-900 truncate">{{ user.email|default:user.username }}</p>
+                        </div>
+                        <a href="{% url 'dashboard:customer_dashboard' %}" class="flex items-center px-4 py-2 text-sm text-stone-700 hover:bg-coffee-50 hover:text-coffee-800 transition">
+                            <i class="fa-solid fa-table-columns w-5 text-coffee-600"></i> My Dashboard
+                        </a>
+                        <a href="{% url 'orders:history' %}" class="flex items-center px-4 py-2 text-sm text-stone-700 hover:bg-coffee-50 hover:text-coffee-800 transition">
+                            <i class="fa-solid fa-receipt w-5 text-coffee-600"></i> Order History
+                        </a>
+                        <a href="{% url 'loyalty:rewards' %}" class="flex items-center px-4 py-2 text-sm text-stone-700 hover:bg-coffee-50 hover:text-coffee-800 transition">
+                            <i class="fa-solid fa-gem w-5 text-amber-600"></i> Loyalty Rewards ({{ user_loyalty_points }} pts)
+                        </a>
+                        <a href="{% url 'accounts:profile' %}" class="flex items-center px-4 py-2 text-sm text-stone-700 hover:bg-coffee-50 hover:text-coffee-800 transition">
+                            <i class="fa-solid fa-user-gear w-5 text-coffee-600"></i> Profile Settings
+                        </a>
+                        {% if user.is_staff %}
+                        <div class="border-t border-stone-100 my-1"></div>
+                        <a href="{% url 'dashboard:admin_overview' %}" class="flex items-center px-4 py-2 text-sm text-amber-800 bg-amber-50/50 hover:bg-amber-100/70 transition font-medium">
+                            <i class="fa-solid fa-shield-halved w-5 text-amber-700"></i> Staff Dashboard
+                        </a>
+                        <a href="{% url 'admin:index' %}" target="_blank" class="flex items-center px-4 py-2 text-sm text-stone-700 hover:bg-coffee-50 hover:text-coffee-800 transition">
+                            <i class="fa-solid fa-database w-5 text-coffee-600"></i> Django Admin
+                        </a>
+                        {% endif %}
+                        <div class="border-t border-stone-100 my-1"></div>
+                        <a href="{% url 'accounts:logout' %}" class="flex items-center px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 transition">
+                            <i class="fa-solid fa-right-from-bracket w-5"></i> Sign Out
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <a href="{% url 'accounts:login' %}" class="hidden sm:inline-flex text-sm font-semibold text-stone-700 hover:text-coffee-800 px-3 py-2 rounded-xl transition">
+                    Sign In
+                </a>
+                <a href="{% url 'accounts:register' %}" class="inline-flex items-center px-4 py-2.5 rounded-xl bg-coffee-800 text-white text-sm font-semibold hover:bg-coffee-900 shadow-md hover:shadow-lg transition">
+                    Get Started
+                </a>
+                {% endif %}
+
+                <!-- Mobile Hamburger Toggle Button -->
+                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-xl text-stone-700 hover:bg-stone-100 focus:outline-none" aria-label="Toggle Navigation">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-stone-200 bg-white px-4 pt-3 pb-6 space-y-3 shadow-lg">
+            <a href="{% url 'home' %}" class="block py-2 text-base font-semibold text-stone-800 hover:text-coffee-700">Home</a>
+            <a href="{% url 'products:list' %}" class="block py-2 text-base font-medium text-stone-700 hover:text-coffee-700">Coffee Menu</a>
+            <a href="{% url 'about' %}" class="block py-2 text-base font-medium text-stone-700 hover:text-coffee-700">About Us</a>
+            <a href="{% url 'contact' %}" class="block py-2 text-base font-medium text-stone-700 hover:text-coffee-700">Contact</a>
+            
+            {% if user.is_authenticated %}
+            <div class="pt-3 border-t border-stone-100 space-y-2">
+                <div class="flex items-center justify-between py-1 text-sm font-semibold text-coffee-900">
+                    <span>Loyalty Points:</span>
+                    <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold">{{ user_loyalty_points }} pts</span>
+                </div>
+                <a href="{% url 'dashboard:customer_dashboard' %}" class="block py-2 text-sm font-medium text-stone-700 hover:text-coffee-700">My Dashboard</a>
+                <a href="{% url 'orders:history' %}" class="block py-2 text-sm font-medium text-stone-700 hover:text-coffee-700">My Order History</a>
+                <a href="{% url 'loyalty:rewards' %}" class="block py-2 text-sm font-medium text-stone-700 hover:text-coffee-700">Rewards Program</a>
+                <a href="{% url 'accounts:profile' %}" class="block py-2 text-sm font-medium text-stone-700 hover:text-coffee-700">Profile Settings</a>
+                {% if user.is_staff %}
+                <a href="{% url 'dashboard:admin_overview' %}" class="block py-2 text-sm font-semibold text-amber-800">Staff Portal</a>
+                {% endif %}
+                <a href="{% url 'accounts:logout' %}" class="block py-2 text-sm font-semibold text-rose-600">Sign Out</a>
+            </div>
+            {% else %}
+            <div class="pt-3 border-t border-stone-100 flex flex-col space-y-2">
+                <a href="{% url 'accounts:login' %}" class="text-center py-2.5 rounded-xl border border-stone-300 font-semibold text-stone-700 hover:bg-stone-50">Sign In</a>
+                <a href="{% url 'accounts:register' %}" class="text-center py-2.5 rounded-xl bg-coffee-800 text-white font-semibold hover:bg-coffee-900">Register</a>
+            </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Global Django Messages / Notification Alerts -->
+    {% if messages %}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 w-full">
+        <div class="space-y-3">
+            {% for message in messages %}
+            <div class="flex items-center justify-between p-4 rounded-2xl border shadow-sm transition duration-300 {{ message.tags }}">
+                <div class="flex items-center space-x-3">
+                    {% if 'success' in message.tags %}
+                    <i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>
+                    {% elif 'error' in message.tags or 'danger' in message.tags %}
+                    <i class="fa-solid fa-circle-exclamation text-rose-600 text-lg"></i>
+                    {% elif 'warning' in message.tags %}
+                    <i class="fa-solid fa-triangle-exclamation text-amber-600 text-lg"></i>
+                    {% else %}
+                    <i class="fa-solid fa-circle-info text-sky-600 text-lg"></i>
+                    {% endif %}
+                    <span class="text-sm font-medium">{{ message }}</span>
+                </div>
+                <button type="button" onclick="this.parentElement.remove()" class="text-stone-400 hover:text-stone-600 ml-4 focus:outline-none">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Main Dynamic Content Block -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-coffee-950 text-coffee-200 mt-20 border-t border-coffee-800/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+                
+                <!-- Brand Bio -->
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                            <i class="fa-solid fa-mug-hot text-lg"></i>
+                        </div>
+                        <span class="text-2xl font-serif font-bold text-white tracking-tight">Modern Coffee Shop</span>
+                    </div>
+                    <p class="text-sm text-stone-400 leading-relaxed max-w-sm">
+                        Crafting exceptional coffee moments every single morning. Ethically sourced single-origin Himalayan beans, artisan micro-roasting, and cozy hospitality.
+                    </p>
+                    <div class="flex space-x-3 pt-2 text-stone-300">
+                        <a href="#" class="w-9 h-9 rounded-full bg-coffee-900 hover:bg-amber-600 flex items-center justify-center transition text-sm"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-coffee-900 hover:bg-amber-600 flex items-center justify-center transition text-sm"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-coffee-900 hover:bg-amber-600 flex items-center justify-center transition text-sm"><i class="fa-brands fa-tiktok"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-coffee-900 hover:bg-amber-600 flex items-center justify-center transition text-sm"><i class="fa-brands fa-x-twitter"></i></a>
+                    </div>
+                </div>
+
+                <!-- Navigation Quick Links -->
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white mb-4">Quick Links</h3>
+                    <ul class="space-y-2.5 text-sm text-stone-400">
+                        <li><a href="{% url 'home' %}" class="hover:text-amber-400 transition">Home</a></li>
+                        <li><a href="{% url 'products:list' %}" class="hover:text-amber-400 transition">Full Coffee Menu</a></li>
+                        <li><a href="{% url 'about' %}" class="hover:text-amber-400 transition">Our Story & Roastery</a></li>
+                        <li><a href="{% url 'contact' %}" class="hover:text-amber-400 transition">Contact & Locations</a></li>
+                        <li><a href="{% url 'loyalty:rewards' %}" class="hover:text-amber-400 transition">Customer Rewards</a></li>
+                    </ul>
+                </div>
+
+                <!-- Opening Hours -->
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white mb-4">Opening Hours</h3>
+                    <ul class="space-y-2.5 text-sm text-stone-400">
+                        <li class="flex justify-between"><span>Monday – Friday:</span> <span class="text-stone-200">7 AM – 10 PM</span></li>
+                        <li class="flex justify-between"><span>Saturday:</span> <span class="text-stone-200">7 AM – 11 PM</span></li>
+                        <li class="flex justify-between"><span>Sunday:</span> <span class="text-stone-200">8 AM – 10 PM</span></li>
+                        <li class="pt-2 text-xs text-amber-400/90 font-medium">Fresh morning roast brewed daily at 6:30 AM</li>
+                    </ul>
+                </div>
+
+                <!-- Contact & Payments -->
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white mb-4">Visit & Order</h3>
+                    <ul class="space-y-2.5 text-sm text-stone-400">
+                        <li class="flex items-start space-x-2">
+                            <i class="fa-solid fa-location-dot mt-1 text-amber-500"></i>
+                            <span>Thamel Marg, Sector 4, Kathmandu, Nepal</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fa-solid fa-phone text-amber-500"></i>
+                            <span>+977 1-4567890</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fa-solid fa-envelope text-amber-500"></i>
+                            <span>order@moderncoffeeshop.com</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-5 pt-4 border-t border-coffee-900">
+                        <p class="text-xs text-stone-400 mb-2 font-medium">Accepted Payments:</p>
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2.5 py-1 rounded bg-[#5c2d91] text-white text-[11px] font-bold tracking-wide shadow-sm flex items-center">
+                                <i class="fa-solid fa-shield-check mr-1 text-[10px]"></i> KHALTI
+                            </span>
+                            <span class="px-2.5 py-1 rounded bg-coffee-800 text-stone-200 text-[11px] font-bold tracking-wide shadow-sm flex items-center">
+                                <i class="fa-solid fa-store mr-1 text-[10px]"></i> Pay at Counter
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Copyright -->
+            <div class="border-t border-coffee-900 mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-stone-500 gap-4">
+                <p>&copy; 2026 Modern Coffee Shop. All rights reserved. Secure Django e-commerce platform.</p>
+                <div class="flex space-x-6">
+                    <a href="{% url 'about' %}" class="hover:text-stone-400 transition">Privacy Policy</a>
+                    <a href="{% url 'about' %}" class="hover:text-stone-400 transition">Terms of Service</a>
+                    <a href="{% url 'products:list' %}" class="hover:text-stone-400 transition">Menu Guide</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Menu Script -->
+    <script>
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileBtn && mobileMenu) {
+            mobileBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

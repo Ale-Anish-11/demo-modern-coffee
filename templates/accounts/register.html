@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-md mx-auto px-4 py-12">
+    <div class="bg-white rounded-3xl border border-stone-200 shadow-xl overflow-hidden p-6 sm:p-10 space-y-6">
+        
+        <!-- Header -->
+        <div class="text-center space-y-2">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-700 flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-mug-hot"></i>
+            </div>
+            <h1 class="text-2xl font-serif font-bold text-coffee-950">Join Modern Coffee Shop</h1>
+            <p class="text-xs text-stone-500">Create an account to order online and get <strong>50 Welcome Bonus Points</strong>!</p>
+        </div>
+
+        <!-- Registration Form -->
+        <form method="post" action="{% url 'accounts:register' %}" class="space-y-4" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-xs text-rose-700">
+                {% for err in form.non_field_errors %}
+                <p>{{ err }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-stone-700 uppercase tracking-wider">Full Name *</label>
+                {{ form.full_name }}
+                {% if form.full_name.errors %}
+                <p class="text-xs text-rose-600 mt-1">{{ form.full_name.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-stone-700 uppercase tracking-wider">Username *</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                <p class="text-xs text-rose-600 mt-1">{{ form.username.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-stone-700 uppercase tracking-wider">Email Address *</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                <p class="text-xs text-rose-600 mt-1">{{ form.email.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-stone-700 uppercase tracking-wider">Mobile Phone *</label>
+                {{ form.phone }}
+                {% if form.phone.errors %}
+                <p class="text-xs text-rose-600 mt-1">{{ form.phone.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-stone-700 uppercase tracking-wider">Password (Min. 8 chars) *</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                <p class="text-xs text-rose-600 mt-1">{{ form.password.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-stone-700 uppercase tracking-wider">Confirm Password *</label>
+                {{ form.confirm_password }}
+                {% if form.confirm_password.errors %}
+                <p class="text-xs text-rose-600 mt-1">{{ form.confirm_password.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="pt-2">
+                <button type="submit" class="w-full py-3.5 rounded-2xl bg-coffee-800 hover:bg-coffee-900 text-white font-bold text-sm shadow-md hover:shadow-lg transition">
+                    Create Account & Claim 50 Pts
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center text-xs text-stone-500 pt-2 border-t border-stone-100">
+            Already have an account? 
+            <a href="{% url 'accounts:login' %}" class="text-amber-700 font-bold hover:underline">
+                Sign in here
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

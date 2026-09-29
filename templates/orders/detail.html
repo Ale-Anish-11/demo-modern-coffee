@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    
+    <!-- Top Bar -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+            <a href="{% url 'orders:history' %}" class="inline-flex items-center text-xs font-semibold text-stone-500 hover:text-coffee-800 transition mb-2">
+                <i class="fa-solid fa-arrow-left mr-1.5"></i> Back to Orders
+            </a>
+            <h1 class="text-3xl font-serif font-bold text-coffee-950 flex items-center space-x-3">
+                <span>Order #{{ order.order_number }}</span>
+            </h1>
+            <p class="text-xs text-stone-500 mt-1">Placed on {{ order.created_at|date:"F d, Y at h:i A" }}</p>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <a href="{% url 'orders:receipt' order.order_number %}" target="_blank" class="px-4 py-2.5 rounded-xl border border-stone-300 hover:bg-stone-50 text-stone-700 font-semibold text-xs transition flex items-center space-x-1.5 shadow-sm">
+                <i class="fa-solid fa-print"></i>
+                <span>Print Receipt</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Order Status Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        
+        <div class="bg-white p-6 rounded-3xl border border-stone-200 shadow-sm space-y-2">
+            <span class="text-xs text-stone-400 uppercase font-bold tracking-wider">Order Status</span>
+            <div class="flex items-center space-x-2">
+                <span class="px-3 py-1 rounded-full text-xs font-bold border {{ order.status_color_class }}">
+                    {{ order.get_order_status_display }}
+                </span>
+            </div>
+            <p class="text-xs text-stone-500 pt-1">
+                {% if order.order_status == 'COMPLETED' %}
+                Order was prepared and delivered/picked up.
+                {% elif order.order_status == 'READY' %}
+                Your coffee is hot and waiting at the pickup counter!
+                {% elif order.order_status == 'PREPARING' %}
+                Our baristas are actively brewing your drinks.
+                {% elif order.order_status == 'CONFIRMED' %}
+                Order confirmed! Queue assigned to barista.
+                {% else %}
+                Awaiting counter confirmation or payment.
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-3xl border border-stone-200 shadow-sm space-y-2">
+            <span class="text-xs text-stone-400 uppercase font-bold tracking-wider">Payment Information</span>
+            <div class="flex items-center space-x-2">
+                <span class="px-3 py-1 rounded-full text-xs font-bold border {{ order.payment_badge_class }}">
+                    {{ order.get_payment_status_display }}
+                </span>
+                <span class="text-xs font-semibold text-stone-700">({{ order.get_payment_method_display }})</span>
+            </div>
+            <p class="text-xs text-stone-500 pt-1">
+                {% if order.payment_status == 'PENDING' and order.payment_method == 'KHALTI' %}
+                <a href="{% url 'payments:khalti_initiate' order.order_number %}" class="text-amber-700 font-bold underline">
+                    Complete Khalti Payment Now →
+                </a>
+                {% elif order.payment_status == 'PENDING' %}
+                Please settle Rs. {{ order.total_amount }} at our counter.
+                {% else %}
+                Payment successfully settled.
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-3xl border border-stone-200 shadow-sm space-y-2">
+            <span class="text-xs text-stone-400 uppercase font-bold tracking-wider">Customer & Contact</span>
+            <h4 class="font-bold text-stone-900 text-sm">{{ order.customer_name }}</h4>
+            <p class="text-xs text-stone-500">{{ order.email }} • {{ order.phone }}</p>
+            {% if order.notes %}
+            <p class="text-xs text-stone-600 bg-stone-50 p-2 rounded-xl border border-stone-100 italic mt-1">"{{ order.notes }}"</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- Items and Calculation Breakdown -->
+    <div class="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden mb-8">
+        <div class="p-6 border-b border-stone-100">
+            <h3 class="font-serif font-bold text-lg text-coffee-950">Items in this Order</h3>
+        </div>
+
+        <div class="divide-y divide-stone-100">
+            {% for item in order.items.all %}
+            <div class="p-6 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <img src="{{ item.product.get_image_url }}" alt="{{ item.product.name }}" class="w-16 h-16 rounded-2xl object-cover bg-stone-100 border border-stone-200">
+                    <div>
+                        <span class="text-[10px] font-bold text-amber-700 uppercase tracking-wider">{{ item.product.category.name }}</span>
+                        <h4 class="font-serif font-bold text-base text-stone-900">
+                            <a href="{% url 'products:detail' item.product.slug %}" class="hover:text-coffee-800 transition">
+                                {{ item.product.name }}
+                            </a>
+                        </h4>
+                        <span class="text-xs text-stone-500">Rs. {{ item.unit_price }} × {{ item.quantity }}</span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span class="text-sm font-bold text-coffee-950">Rs. {{ item.subtotal }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Calculations Table -->
+        <div class="p-6 bg-stone-50/70 border-t border-stone-100 space-y-2.5 text-sm max-w-sm ml-auto">
+            <div class="flex justify-between text-stone-600">
+                <span>Subtotal:</span>
+                <span class="font-bold text-stone-900">Rs. {{ order.subtotal }}</span>
+            </div>
+            {% if order.discount_amount > 0 %}
+            <div class="flex justify-between text-emerald-700">
+                <span>Points Discount ({{ order.points_redeemed }} pts):</span>
+                <span class="font-bold">-Rs. {{ order.discount_amount }}</span>
+            </div>
+            {% endif %}
+            <div class="flex justify-between text-stone-600">
+                <span>Pickup / Service:</span>
+                <span class="font-semibold text-emerald-600">Free</span>
+            </div>
+            <div class="flex justify-between text-base font-bold text-coffee-950 pt-2 border-t border-stone-200">
+                <span>Total Amount:</span>
+                <span class="text-xl">Rs. {{ order.total_amount }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Gateway Log if any -->
+    {% if payments %}
+    <div class="bg-white rounded-3xl border border-stone-200 shadow-sm p-6">
+        <h3 class="font-serif font-bold text-base text-coffee-950 mb-3">Transaction Records</h3>
+        <div class="space-y-2 text-xs">
+            {% for pay in payments %}
+            <div class="p-3 rounded-2xl bg-stone-50 border border-stone-200 flex flex-wrap justify-between items-center gap-2">
+                <div>
+                    <span class="font-bold text-stone-800">{{ pay.payment_method }}</span>
+                    {% if pay.transaction_id %}<span class="font-mono text-stone-500 ml-2">ID: {{ pay.transaction_id }}</span>{% endif %}
+                    {% if pay.reference_id %}<span class="font-mono text-stone-500 ml-2">Ref: {{ pay.reference_id }}</span>{% endif %}
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span class="font-bold text-stone-900">Rs. {{ pay.amount }}</span>
+                    <span class="px-2 py-0.5 rounded-full font-bold uppercase {% if pay.status == 'PAID' %}bg-emerald-100 text-emerald-800{% else %}bg-amber-100 text-amber-800{% endif %}">
+                        {{ pay.get_status_display }}
+                    </span>
+                    <span class="text-stone-400">{{ pay.created_at|date:"H:i - M d" }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

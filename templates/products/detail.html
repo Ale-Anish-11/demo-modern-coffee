@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    
+    <!-- Breadcrumbs -->
+    <nav class="flex items-center space-x-2 text-xs text-stone-500 mb-8">
+        <a href="{% url 'home' %}" class="hover:text-coffee-800 transition">Home</a>
+        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+        <a href="{% url 'products:list' %}" class="hover:text-coffee-800 transition">Menu</a>
+        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+        <a href="{% url 'products:category' product.category.slug %}" class="hover:text-coffee-800 transition">{{ product.category.name }}</a>
+        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+        <span class="text-stone-800 font-medium truncate">{{ product.name }}</span>
+    </nav>
+
+    <!-- Product Main Showcase -->
+    <div class="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden p-6 sm:p-10 mb-16">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            
+            <!-- Large Image Gallery / Display -->
+            <div class="lg:col-span-6 relative">
+                <div class="relative h-96 sm:h-[480px] rounded-3xl overflow-hidden bg-stone-100 shadow-inner group">
+                    <img src="{{ product.get_image_url }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    
+                    {% if not product.in_stock %}
+                    <div class="absolute inset-0 bg-stone-950/70 backdrop-blur-sm flex items-center justify-center">
+                        <span class="px-5 py-2.5 rounded-full bg-rose-600 text-white font-bold text-sm uppercase tracking-wider shadow-lg">
+                            Currently Out of Stock
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Product Info & Actions -->
+            <div class="lg:col-span-6 space-y-6">
+                
+                <div>
+                    <div class="flex items-center space-x-3 mb-2">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-50 text-amber-800 border border-amber-200">
+                            {{ product.category.name }}
+                        </span>
+                        
+                        {% if product.in_stock %}
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
+                            In Stock ({{ product.stock }} available)
+                        </span>
+                        {% else %}
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200">
+                            Out of Stock
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <h1 class="text-3xl sm:text-4xl font-serif font-bold text-coffee-950 leading-tight">
+                        {{ product.name }}
+                    </h1>
+
+                    <div class="flex items-center space-x-3 mt-3">
+                        <div class="flex items-center text-amber-500 text-sm">
+                            <i class="fa-solid fa-star"></i>
+                            <span class="ml-1.5 font-bold text-stone-900">{{ product.rating }}</span>
+                        </div>
+                        <span class="text-stone-300">•</span>
+                        <span class="text-xs text-stone-500">({{ product.reviews_count }} verified reviews)</span>
+                        <span class="text-stone-300">•</span>
+                        <span class="text-xs text-stone-500"><i class="fa-solid fa-stopwatch text-amber-600 mr-1"></i>{{ product.brew_time }}</span>
+                    </div>
+                </div>
+
+                <!-- Price Tag -->
+                <div class="p-4 rounded-2xl bg-coffee-50/70 border border-coffee-200 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-stone-500 block">Unit Price (NPR)</span>
+                        <div class="text-3xl font-serif font-bold text-coffee-950">Rs. {{ product.price }}</div>
+                    </div>
+                    <div class="text-right text-xs text-stone-500">
+                        <span class="text-amber-800 font-bold block"><i class="fa-solid fa-gift mr-1"></i>Earn points</span>
+                        <span>Earn ~{{ product.price|floatformat:0 }} pts with loyalty</span>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <h3 class="text-sm font-bold text-stone-900 uppercase tracking-wider mb-2">Flavor Profile & Notes</h3>
+                    <p class="text-sm text-stone-600 leading-relaxed">{{ product.description }}</p>
+                </div>
+
+                <!-- Characteristics Pills -->
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                    <div class="p-3 rounded-xl bg-stone-50 border border-stone-200 text-xs">
+                        <span class="text-stone-400 block font-medium">Brewing Time</span>
+                        <span class="font-bold text-stone-800">{{ product.brew_time }}</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-stone-50 border border-stone-200 text-xs">
+                        <span class="text-stone-400 block font-medium">Approx. Calories</span>
+                        <span class="font-bold text-stone-800">{{ product.calories|default:'Under 15' }} kcal</span>
+                    </div>
+                </div>
+
+                <!-- Purchase Form (Stock Guarded) -->
+                {% if product.in_stock %}
+                <form action="{% url 'orders:cart_add' product.id %}" method="post" class="space-y-4 pt-4 border-t border-stone-200">
+                    {% csrf_token %}
+                    
+                    <div class="flex items-center space-x-4">
+                        <label for="quantity" class="text-sm font-bold text-stone-800">Quantity:</label>
+                        <div class="flex items-center border border-stone-300 rounded-xl bg-stone-50 overflow-hidden shadow-sm">
+                            <button type="button" onclick="decrementQty()" class="px-3.5 py-2 text-stone-600 hover:bg-stone-200 transition font-bold">-</button>
+                            <input type="number" id="qty-input" name="quantity" value="1" min="1" max="{{ product.stock }}" class="w-14 text-center py-2 bg-transparent text-sm font-bold text-stone-800 outline-none">
+                            <button type="button" onclick="incrementQty()" class="px-3.5 py-2 text-stone-600 hover:bg-stone-200 transition font-bold">+</button>
+                        </div>
+                        <span class="text-xs text-stone-400">Max {{ product.stock }} items</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                        <button type="submit" class="w-full py-4 rounded-2xl bg-coffee-800 hover:bg-coffee-900 text-white font-bold text-sm shadow-md hover:shadow-lg transition flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                            <span>Add to Coffee Cart</span>
+                        </button>
+                        <button type="submit" name="buy_now" value="1" class="w-full py-4 rounded-2xl bg-amber-500 hover:bg-amber-400 text-coffee-950 font-bold text-sm shadow-md hover:shadow-lg transition flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-bolt"></i>
+                            <span>Order / Buy Now</span>
+                        </button>
+                    </div>
+                </form>
+                {% else %}
+                <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-sm flex items-center space-x-3">
+                    <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+                    <div>
+                        <p class="font-bold">Item Temporarily Out of Stock</p>
+                        <p class="text-xs mt-0.5">We are roasting more beans. Please explore our other delicious selections.</p>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    {% if related_products %}
+    <div class="space-y-6">
+        <div class="flex items-center justify-between border-b border-stone-200 pb-4">
+            <h2 class="text-2xl font-serif font-bold text-coffee-950">You Might Also Like</h2>
+            <a href="{% url 'products:category' product.category.slug %}" class="text-xs font-bold text-amber-700 hover:text-amber-800">
+                More in {{ product.category.name }} →
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for item in related_products %}
+            <div class="bg-white rounded-2xl overflow-hidden border border-stone-200/80 shadow-sm hover:shadow-md transition flex flex-col group">
+                <div class="h-44 overflow-hidden bg-stone-100 relative">
+                    <img src="{{ item.get_image_url }}" alt="{{ item.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                </div>
+                <div class="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold text-amber-700 uppercase tracking-wider">{{ item.category.name }}</span>
+                        <h4 class="font-serif font-bold text-sm text-stone-900 group-hover:text-coffee-800 transition line-clamp-1 mt-0.5">
+                            <a href="{% url 'products:detail' item.slug %}">{{ item.name }}</a>
+                        </h4>
+                    </div>
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-stone-100">
+                        <span class="font-bold text-sm text-coffee-950">Rs. {{ item.price }}</span>
+                        <a href="{% url 'products:detail' item.slug %}" class="text-xs font-semibold text-amber-700 hover:text-amber-800">
+                            View →
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+    const maxStock = {{ product.stock|default:1 }};
+    const qtyInput = document.getElementById('qty-input');
+
+    function incrementQty() {
+        if (qtyInput) {
+            let current = parseInt(qtyInput.value) || 1;
+            if (current < maxStock) {
+                qtyInput.value = current + 1;
+            }
+        }
+    }
+
+    function decrementQty() {
+        if (qtyInput) {
+            let current = parseInt(qtyInput.value) || 1;
+            if (current > 1) {
+                qtyInput.value = current - 1;
+            }
+        }
+    }
+</script>
+{% endblock %}

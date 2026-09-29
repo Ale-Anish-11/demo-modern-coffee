@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-lg mx-auto px-4 py-16">
+    <div class="bg-white rounded-3xl border border-stone-200 shadow-xl p-8 text-center space-y-6">
+        
+        <div class="w-16 h-16 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto text-2xl">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+
+        <div>
+            <h1 class="text-2xl font-serif font-bold text-coffee-950">Delete Product</h1>
+            <p class="text-sm text-stone-600 mt-2">
+                Are you sure you want to permanently delete <strong class="text-stone-900 font-bold">"{{ product.name }}"</strong> from the coffee menu?
+            </p>
+        </div>
+
+        <form method="post" class="flex items-center justify-center space-x-3 pt-2">
+            {% csrf_token %}
+            <a href="{% url 'dashboard:admin_products' %}" class="px-5 py-3 rounded-2xl border border-stone-300 text-stone-700 text-xs font-semibold hover:bg-stone-50 transition">
+                Cancel
+            </a>
+            <button type="submit" class="px-6 py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition">
+                Yes, Delete Product
+            </button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

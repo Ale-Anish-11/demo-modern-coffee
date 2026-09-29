@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="bg-coffee-950 text-white py-16 sm:py-24 border-b border-coffee-800 relative overflow-hidden">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4 relative z-10">
+        <span class="text-xs font-bold uppercase tracking-widest text-amber-400">Our Heritage</span>
+        <h1 class="text-4xl sm:text-5xl font-serif font-bold text-white">The Modern Coffee Story</h1>
+        <p class="text-base text-coffee-200 max-w-2xl mx-auto leading-relaxed">
+            Crafting pure specialty coffee in the heart of Kathmandu since 2021. From high-altitude mountain slopes to your morning mug.
+        </p>
+    </div>
+</div>
+
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-16">
+
+    <!-- Mission & Roasting Philosophy -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+        <div class="space-y-4">
+            <span class="text-xs font-bold uppercase tracking-widest text-amber-700">Bean To Cup</span>
+            <h2 class="text-3xl font-serif font-bold text-coffee-950">Ethically Sourced, Artfully Roasted</h2>
+            <p class="text-sm text-stone-600 leading-relaxed">
+                At <strong>Modern Coffee Shop</strong>, we believe every cup of coffee is a communion between nature, the farmer, the roaster, and the barista. We partner directly with organic coffee farmers across Nuwakot, Gulmi, and Ilam to curate only the finest 100% Arabica shade-grown cherries.
+            </p>
+            <p class="text-sm text-stone-600 leading-relaxed">
+                Our in-house master roasters calibrate flame temperature and drum velocity in small micro-batches every morning at 6:30 AM to bring forth delicate floral highlights, rich dark cacao, and butter caramel sweetness.
+            </p>
+        </div>
+        <div class="rounded-3xl overflow-hidden shadow-lg border border-stone-200">
+            <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=800&q=80" alt="Coffee beans roasting" class="w-full h-80 object-cover">
+        </div>
+    </div>
+
+    <!-- 3 Pillars -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+        <div class="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm space-y-3 text-center">
+            <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-mountain"></i>
+            </div>
+            <h3 class="font-serif font-bold text-lg text-coffee-950">High Altitude Arabica</h3>
+            <p class="text-xs text-stone-500 leading-relaxed">Grown above 1,400 meters where cool mountain mist slows cherry maturation for deep, complex sweetness.</p>
+        </div>
+
+        <div class="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm space-y-3 text-center">
+            <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-flask"></i>
+            </div>
+            <h3 class="font-serif font-bold text-lg text-coffee-950">Precision Brewing</h3>
+            <p class="text-xs text-stone-500 leading-relaxed">Dual-boiler La Marzocco extraction, filtered mountain water, and calibrated TDS levels for every drink.</p>
+        </div>
+
+        <div class="bg-white p-8 rounded-3xl border border-stone-200 shadow-sm space-y-3 text-center">
+            <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-heart"></i>
+            </div>
+            <h3 class="font-serif font-bold text-lg text-coffee-950">Warm Hospitality</h3>
+            <p class="text-xs text-stone-500 leading-relaxed">Whether ordering online with Khalti for a quick desk pickup or lingering in our cozy cafe, you are family.</p>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="bg-coffee-900 rounded-3xl p-8 sm:p-12 text-center text-white space-y-4">
+        <h3 class="text-2xl sm:text-3xl font-serif font-bold">Taste The Difference Today</h3>
+        <p class="text-xs sm:text-sm text-coffee-200 max-w-lg mx-auto">Explore our menu of espresso classics, artisan pour-overs, and flaky European morning croissants.</p>
+        <div class="pt-2">
+            <a href="{% url 'products:list' %}" class="inline-flex items-center px-6 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-coffee-950 font-bold text-sm shadow transition">
+                Browse Full Coffee Menu
+            </a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

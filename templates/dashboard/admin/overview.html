@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    
+    <!-- Top Admin Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+            <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-coffee-900 text-amber-400 mb-2">
+                <i class="fa-solid fa-shield-halved mr-1.5"></i> Staff & Owner Management Portal
+            </div>
+            <h1 class="text-3xl font-serif font-bold text-coffee-950">Store Overview & Analytics</h1>
+            <p class="text-xs text-stone-500 mt-1">Live metrics, barista order queues, inventory levels, and payment records.</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+            <a href="{% url 'dashboard:admin_product_create' %}" class="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs transition shadow-sm flex items-center space-x-1.5">
+                <i class="fa-solid fa-plus"></i>
+                <span>Add Product</span>
+            </a>
+            <a href="{% url 'dashboard:admin_orders' %}" class="px-4 py-2.5 rounded-xl bg-coffee-800 hover:bg-coffee-900 text-white font-bold text-xs transition shadow-sm flex items-center space-x-1.5">
+                <i class="fa-solid fa-list-check"></i>
+                <span>Manage Orders</span>
+            </a>
+            <a href="{% url 'admin:index' %}" target="_blank" class="px-3.5 py-2.5 rounded-xl border border-stone-300 hover:bg-stone-50 text-stone-700 font-semibold text-xs transition shadow-sm" title="Open Standard Django Admin">
+                <i class="fa-solid fa-database mr-1"></i> Django Admin
+            </a>
+        </div>
+    </div>
+
+    <!-- Staff Navigation Tabs -->
+    <div class="flex items-center space-x-2 border-b border-stone-200 pb-3 mb-8 overflow-x-auto scrollbar-none text-xs font-bold">
+        <a href="{% url 'dashboard:admin_overview' %}" class="px-4 py-2 rounded-xl bg-coffee-800 text-white shadow">Overview</a>
+        <a href="{% url 'dashboard:admin_orders' %}" class="px-4 py-2 rounded-xl bg-stone-100 text-stone-700 hover:bg-stone-200 transition">Customer Orders</a>
+        <a href="{% url 'dashboard:admin_products' %}" class="px-4 py-2 rounded-xl bg-stone-100 text-stone-700 hover:bg-stone-200 transition">Product Inventory</a>
+        <a href="{% url 'dashboard:admin_customers' %}" class="px-4 py-2 rounded-xl bg-stone-100 text-stone-700 hover:bg-stone-200 transition">Customers</a>
+        <a href="{% url 'dashboard:admin_payments' %}" class="px-4 py-2 rounded-xl bg-stone-100 text-stone-700 hover:bg-stone-200 transition">Payment Logs</a>
+    </div>
+
+    <!-- 8 Analytics Stat Cards Grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
+        
+        <!-- Total Sales -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-sm space-y-1">
+            <span class="text-xs font-bold uppercase text-stone-400">Total Sales</span>
+            <div class="text-2xl sm:text-3xl font-serif font-bold text-coffee-950">Rs. {{ total_sales }}</div>
+            <span class="text-[11px] text-emerald-600 font-semibold flex items-center">
+                <i class="fa-solid fa-circle-check mr-1"></i> Paid Orders
+            </span>
+        </div>
+
+        <!-- Today's Orders -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-sm space-y-1">
+            <span class="text-xs font-bold uppercase text-stone-400">Today's Orders</span>
+            <div class="text-2xl sm:text-3xl font-serif font-bold text-amber-600">{{ todays_orders }}</div>
+            <span class="text-[11px] text-stone-400 font-medium">Placed today</span>
+        </div>
+
+        <!-- Pending Barista Queue -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-sm space-y-1">
+            <span class="text-xs font-bold uppercase text-stone-400">Pending Orders</span>
+            <div class="text-2xl sm:text-3xl font-serif font-bold text-amber-700">{{ pending_orders }}</div>
+            <span class="text-[11px] text-amber-600 font-medium">Need preparation/counter</span>
+        </div>
+
+        <!-- Completed Orders -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-sm space-y-1">
+            <span class="text-xs font-bold uppercase text-stone-400">Completed Orders</span>
+            <div class="text-2xl sm:text-3xl font-serif font-bold text-emerald-700">{{ completed_orders }}</div>
+            <span class="text-[11px] text-stone-400 font-medium">Out of {{ total_orders }} total</span>
+        </div>
+
+        <!-- Registered Customers -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-sm space-y-1">
+            <span class="text-xs font-bold uppercase text-stone-400">Registered Customers</span>
+            <div class="text-2xl sm:text-3xl font-serif font-bold text-stone-900">{{ total_customers }}</div>
+            <a href="{% url 'dashboard:admin_customers' %}" class="text-[11px] text-amber-700 hover:underline">View customer list →</a>
+        </div>
+
+        <!-- Products in Menu -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-sm space-y-1">
+            <span class="text-xs font-bold uppercase text-stone-400">Active Menu Items</span>
+            <div class="text-2xl sm:text-3xl font-serif font-bold text-stone-900">{{ total_products }}</div>
+            <a href="{% url 'dashboard:admin_products' %}" class="text-[11px] text-amber-700 hover:underline">Manage stock →</a>
+        </div>
+
+        <!-- Points Issued -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-sm space-y-1">
+            <span class="text-xs font-bold uppercase text-stone-400">Points Issued</span>
+            <div class="text-2xl sm:text-3xl font-serif font-bold text-purple-700">{{ points_issued }} <span class="text-xs text-stone-400">pts</span></div>
+            <span class="text-[11px] text-purple-600 font-medium">Customer loyalty balance</span>
+        </div>
+
+        <!-- Total Orders -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200 shadow-sm space-y-1">
+            <span class="text-xs font-bold uppercase text-stone-400">Lifetime Orders</span>
+            <div class="text-2xl sm:text-3xl font-serif font-bold text-coffee-950">{{ total_orders }}</div>
+            <span class="text-[11px] text-stone-400 font-medium">Across all channels</span>
+        </div>
+
+    </div>
+
+    <!-- Active Barista Orders Table & Popular Items -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Recent Orders (8 cols) -->
+        <div class="lg:col-span-8 bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-stone-100 flex items-center justify-between">
+                <div>
+                    <h3 class="font-serif font-bold text-lg text-coffee-950">Live Orders Queue</h3>
+                    <p class="text-xs text-stone-500">Latest customer orders waiting or in progress.</p>
+                </div>
+                <a href="{% url 'dashboard:admin_orders' %}" class="text-xs font-bold text-amber-700 hover:underline">
+                    View All Orders →
+                </a>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-xs text-left">
+                    <thead class="bg-stone-50 text-stone-500 uppercase tracking-wider font-semibold border-b border-stone-100">
+                        <tr>
+                            <th class="py-3 px-5">Order #</th>
+                            <th class="py-3 px-5">Customer</th>
+                            <th class="py-3 px-5">Total</th>
+                            <th class="py-3 px-5">Order Status</th>
+                            <th class="py-3 px-5">Payment</th>
+                            <th class="py-3 px-5 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-stone-100">
+                        {% for order in recent_orders %}
+                        <tr class="hover:bg-stone-50/50 transition">
+                            <td class="py-3.5 px-5 font-mono font-bold text-stone-900">
+                                #{{ order.order_number }}
+                            </td>
+                            <td class="py-3.5 px-5">
+                                <span class="font-bold text-stone-800 block">{{ order.customer_name }}</span>
+                                <span class="text-[11px] text-stone-400">{{ order.phone }}</span>
+                            </td>
+                            <td class="py-3.5 px-5 font-bold text-coffee-950">
+                                Rs. {{ order.total_amount }}
+                            </td>
+                            <td class="py-3.5 px-5">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border {{ order.status_color_class }}">
+                                    {{ order.get_order_status_display }}
+                                </span>
+                            </td>
+                            <td class="py-3.5 px-5">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold border {{ order.payment_badge_class }}">
+                                    {{ order.get_payment_status_display }}
+                                </span>
+                            </td>
+                            <td class="py-3.5 px-5 text-right">
+                                <a href="{% url 'orders:detail' order.order_number %}" class="px-3 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-[11px] transition">
+                                    Manage
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="p-6 text-center text-stone-400">No orders recorded yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Popular Coffee Products & Inventory Alert (4 cols) -->
+        <div class="lg:col-span-4 space-y-6">
+            <div class="bg-white rounded-3xl border border-stone-200 shadow-sm p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+                    <h3 class="font-serif font-bold text-lg text-coffee-950">Top Menu Items</h3>
+                    <a href="{% url 'dashboard:admin_products' %}" class="text-xs font-bold text-amber-700 hover:underline">All Products →</a>
+                </div>
+
+                <div class="space-y-3">
+                    {% for prod in popular_products %}
+                    <div class="flex items-center justify-between text-xs p-2 rounded-xl hover:bg-stone-50 transition">
+                        <div class="flex items-center space-x-3">
+                            <img src="{{ prod.get_image_url }}" alt="{{ prod.name }}" class="w-10 h-10 rounded-xl object-cover border border-stone-200">
+                            <div>
+                                <h4 class="font-bold text-stone-900 truncate max-w-[140px]">{{ prod.name }}</h4>
+                                <span class="text-stone-400 text-[10px]">Stock: {{ prod.stock }} units</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-bold text-coffee-950 block">Rs. {{ prod.price }}</span>
+                            <span class="text-[10px] text-amber-600 font-semibold">{{ prod.rating }} ★</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Quick Khalti Sandbox Status Card -->
+            <div class="bg-purple-50/70 rounded-3xl border border-purple-200 p-6 space-y-2">
+                <div class="flex items-center space-x-2 text-[#5c2d91] font-bold text-sm">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span>Khalti Sandbox Connected</span>
+                </div>
+                <p class="text-xs text-purple-900/80 leading-relaxed">
+                    Test secret keys active. Verification handles customer return callbacks and logs references securely in the backend database.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

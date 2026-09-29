@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    
+    <div class="mb-8">
+        <h1 class="text-3xl font-serif font-bold text-coffee-950">Your Coffee Bag</h1>
+        <p class="text-sm text-stone-500 mt-1">Review your handcrafted coffee and pastries before moving to checkout.</p>
+    </div>
+
+    {% if cart %}
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        <!-- Cart Items List (8 cols) -->
+        <div class="lg:col-span-8 space-y-4">
+            <div class="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden">
+                <div class="divide-y divide-stone-100">
+                    {% for item in cart %}
+                    <div class="p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        
+                        <!-- Thumbnail & Info -->
+                        <div class="flex items-center space-x-4 w-full sm:w-auto">
+                            <img src="{{ item.product.get_image_url }}" alt="{{ item.product.name }}" class="w-20 h-20 rounded-2xl object-cover bg-stone-100 flex-shrink-0 border border-stone-200">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-700">{{ item.product.category.name }}</span>
+                                <h3 class="font-serif font-bold text-base text-stone-900">
+                                    <a href="{% url 'products:detail' item.product.slug %}" class="hover:text-coffee-800 transition">
+                                        {{ item.product.name }}
+                                    </a>
+                                </h3>
+                                <div class="text-xs text-stone-500 mt-0.5">
+                                    Unit Price: <strong class="text-stone-800">Rs. {{ item.price }}</strong>
+                                </div>
+                                {% if item.is_out_of_stock %}
+                                <span class="inline-block mt-1 text-[11px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded">
+                                    Out of stock
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Quantity Selector & Actions -->
+                        <div class="flex items-center justify-between sm:justify-end space-x-6 w-full sm:w-auto">
+                            
+                            <!-- +/- Quantity Controls -->
+                            <div class="flex items-center border border-stone-300 rounded-xl bg-stone-50 overflow-hidden shadow-sm">
+                                <form action="{% url 'orders:cart_update' item.product.id %}" method="post" class="inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="decrement">
+                                    <button type="submit" class="px-3 py-1.5 text-stone-600 hover:bg-stone-200 transition font-bold text-sm">-</button>
+                                </form>
+                                <span class="px-3 py-1.5 text-xs font-bold text-stone-800">{{ item.quantity }}</span>
+                                <form action="{% url 'orders:cart_update' item.product.id %}" method="post" class="inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="increment">
+                                    <button type="submit" class="px-3 py-1.5 text-stone-600 hover:bg-stone-200 transition font-bold text-sm" {% if item.quantity >= item.max_available %}disabled title="Maximum stock reached"{% endif %}>+</button>
+                                </form>
+                            </div>
+
+                            <!-- Line Total -->
+                            <div class="text-right min-w-[90px]">
+                                <span class="text-xs text-stone-400 block sm:hidden">Total</span>
+                                <span class="text-base font-bold text-coffee-950">Rs. {{ item.total_price }}</span>
+                            </div>
+
+                            <!-- Remove item form -->
+                            <form action="{% url 'orders:cart_remove' item.product.id %}" method="post" class="inline">
+                                {% csrf_token %}
+                                <button type="submit" class="p-2 text-stone-400 hover:text-rose-600 transition" title="Remove item">
+                                    <i class="fa-solid fa-trash-can text-sm"></i>
+                                </button>
+                            </form>
+
+                        </div>
+
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-2">
+                <a href="{% url 'products:list' %}" class="inline-flex items-center text-sm font-semibold text-coffee-800 hover:text-coffee-950 transition">
+                    <i class="fa-solid fa-arrow-left mr-2 text-xs"></i> Add More Coffee & Treats
+                </a>
+            </div>
+        </div>
+
+        <!-- Cart Summary Card (4 cols) -->
+        <div class="lg:col-span-4">
+            <div class="bg-white rounded-3xl border border-stone-200 shadow-sm p-6 space-y-6 sticky top-28">
+                
+                <h2 class="text-xl font-serif font-bold text-coffee-950 border-b border-stone-100 pb-4">
+                    Order Summary
+                </h2>
+
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between text-stone-600">
+                        <span>Items Subtotal</span>
+                        <span class="font-bold text-stone-900">Rs. {{ subtotal }}</span>
+                    </div>
+                    <div class="flex justify-between text-stone-600">
+                        <span>In-Store Pickup / Counter</span>
+                        <span class="font-semibold text-emerald-600">Free</span>
+                    </div>
+                    <div class="flex justify-between text-stone-600">
+                        <span>Taxes & Service</span>
+                        <span class="font-semibold text-stone-900">Included</span>
+                    </div>
+
+                    {% if potential_points > 0 %}
+                    <div class="p-3 rounded-2xl bg-amber-50/80 border border-amber-200/60 flex items-center justify-between text-xs text-amber-900">
+                        <span class="flex items-center"><i class="fa-solid fa-sparkles text-amber-600 mr-2"></i>Points to earn:</span>
+                        <strong class="font-bold text-coffee-900">+{{ potential_points }} pts</strong>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="border-t border-stone-200 pt-4 flex justify-between items-baseline">
+                    <span class="text-base font-bold text-stone-800">Estimated Total</span>
+                    <span class="text-2xl font-serif font-bold text-coffee-950">Rs. {{ subtotal }}</span>
+                </div>
+
+                <div class="pt-2">
+                    <a href="{% url 'orders:checkout' %}" class="w-full py-4 rounded-2xl bg-coffee-800 hover:bg-amber-600 text-white font-bold text-sm shadow-md hover:shadow-lg transition flex items-center justify-center space-x-2">
+                        <span>Proceed to Secure Checkout</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+
+                <div class="space-y-2 text-xs text-stone-400 border-t border-stone-100 pt-4">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-shield-halved text-emerald-600"></i>
+                        <span>Secure Khalti payment & counter settlement</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-mug-hot text-amber-600"></i>
+                        <span>Brewed fresh upon arrival at counter</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    {% else %}
+    <!-- Empty Cart State -->
+    <div class="bg-white rounded-3xl p-16 text-center border border-stone-200 max-w-lg mx-auto shadow-sm space-y-5">
+        <div class="w-20 h-20 rounded-full bg-coffee-50 border border-coffee-200 text-coffee-800 flex items-center justify-center mx-auto text-3xl">
+            <i class="fa-solid fa-bag-shopping"></i>
+        </div>
+        <h2 class="font-serif font-bold text-2xl text-coffee-950">Your Coffee Bag is Empty</h2>
+        <p class="text-sm text-stone-500">It looks like you haven't selected any coffee or bakery treats yet.</p>
+        <div class="pt-2">
+            <a href="{% url 'products:list' %}" class="inline-flex items-center px-6 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-coffee-950 font-bold text-sm transition shadow-md">
+                <i class="fa-solid fa-mug-hot mr-2"></i> Browse Our Coffee Menu
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

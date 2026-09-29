@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    
+    <!-- Rewards Hero Banner -->
+    <div class="bg-gradient-to-r from-coffee-950 via-coffee-900 to-amber-950 rounded-3xl p-8 sm:p-12 text-white shadow-xl relative overflow-hidden mb-10">
+        <div class="relative z-10 max-w-2xl space-y-4">
+            <span class="px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                <i class="fa-solid fa-gem mr-1.5"></i> Modern Coffee Rewards Club
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-serif font-bold text-white">
+                Turn Every Cup Into Free Coffee
+            </h1>
+            <p class="text-sm text-coffee-200 leading-relaxed">
+                Earn <strong>{{ rate }} points for every Rs. 100</strong> spent at Modern Coffee Shop. Redeem points directly at checkout for instant cash discounts on your favorite roasts.
+            </p>
+        </div>
+
+        <div class="mt-8 pt-8 border-t border-coffee-800/80 grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/10">
+                <span class="text-xs text-amber-300 uppercase font-semibold">Available Balance</span>
+                <div class="text-3xl font-serif font-bold text-white mt-1">{{ balance }} <span class="text-sm font-sans font-normal text-amber-200">points</span></div>
+                <span class="text-xs text-stone-300 mt-1 block">Worth Rs. {{ balance }} in discounts</span>
+            </div>
+
+            <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/10">
+                <span class="text-xs text-amber-300 uppercase font-semibold">Lifetime Earned</span>
+                <div class="text-3xl font-serif font-bold text-white mt-1">{{ total_earned }} <span class="text-sm font-sans font-normal text-amber-200">points</span></div>
+                <span class="text-xs text-stone-300 mt-1 block">Through orders and bonuses</span>
+            </div>
+
+            <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/10">
+                <span class="text-xs text-amber-300 uppercase font-semibold">Total Redeemed</span>
+                <div class="text-3xl font-serif font-bold text-white mt-1">{{ total_redeemed }} <span class="text-sm font-sans font-normal text-amber-200">points</span></div>
+                <span class="text-xs text-stone-300 mt-1 block">Saved at checkout</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Membership Tiers Section -->
+    <div class="mb-12">
+        <div class="text-center max-w-xl mx-auto mb-8">
+            <h2 class="text-2xl font-serif font-bold text-coffee-950">Membership Tiers & Perks</h2>
+            <p class="text-xs text-stone-500 mt-1">Unlock higher benefits as you savor more coffee with us.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for tier in perk_tiers %}
+            <div class="bg-white rounded-3xl p-6 border {% if current_tier.name == tier.name %}border-2 border-amber-600 shadow-md ring-2 ring-amber-100{% else %}border-stone-200 shadow-sm{% endif %} space-y-3 relative">
+                {% if current_tier.name == tier.name %}
+                <span class="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full bg-amber-600 text-white font-bold text-[10px] uppercase tracking-wider shadow">
+                    Current Tier
+                </span>
+                {% endif %}
+                <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center font-bold text-base">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <h3 class="font-serif font-bold text-lg text-stone-900">{{ tier.name }}</h3>
+                <span class="text-xs text-stone-400 block font-medium">{{ tier.min_points }}+ points required</span>
+                <p class="text-xs text-stone-600 leading-relaxed pt-2 border-t border-stone-100">{{ tier.perk }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Points Ledger / History Table -->
+    <div class="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-stone-100 flex items-center justify-between">
+            <div>
+                <h3 class="font-serif font-bold text-xl text-coffee-950">Points Ledger & History</h3>
+                <p class="text-xs text-stone-500 mt-0.5">Every point earned and redeemed is audited securely on our backend.</p>
+            </div>
+            <a href="{% url 'products:list' %}" class="px-4 py-2 rounded-xl bg-coffee-800 text-white font-bold text-xs hover:bg-coffee-900 transition shadow">
+                Order Coffee →
+            </a>
+        </div>
+
+        {% if transactions %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+                <thead class="bg-stone-50 text-stone-500 uppercase tracking-wider font-semibold border-b border-stone-200">
+                    <tr>
+                        <th class="py-3.5 px-6">Date & Time</th>
+                        <th class="py-3.5 px-6">Description</th>
+                        <th class="py-3.5 px-6">Transaction Type</th>
+                        <th class="py-3.5 px-6">Related Order</th>
+                        <th class="py-3.5 px-6 text-right">Points</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-stone-100">
+                    {% for txn in transactions %}
+                    <tr class="hover:bg-stone-50/50 transition">
+                        <td class="py-4 px-6 text-stone-500">{{ txn.created_at|date:"M d, Y - h:i A" }}</td>
+                        <td class="py-4 px-6 font-semibold text-stone-900">{{ txn.description }}</td>
+                        <td class="py-4 px-6">
+                            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold {% if txn.points > 0 %}bg-emerald-50 text-emerald-800 border border-emerald-200{% else %}bg-rose-50 text-rose-800 border border-rose-200{% endif %}">
+                                {{ txn.get_transaction_type_display }}
+                            </span>
+                        </td>
+                        <td class="py-4 px-6">
+                            {% if txn.order %}
+                            <a href="{% url 'orders:detail' txn.order.order_number %}" class="text-amber-700 font-bold hover:underline font-mono">
+                                #{{ txn.order.order_number }}
+                            </a>
+                            {% else %}
+                            <span class="text-stone-400">-</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-4 px-6 text-right font-mono font-bold text-sm {% if txn.points > 0 %}text-emerald-700{% else %}text-rose-600{% endif %}">
+                            {% if txn.points > 0 %}+{% endif %}{{ txn.points }} pts
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="p-10 text-center text-sm text-stone-500">
+            No transactions yet. Place an order or register to start earning!
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

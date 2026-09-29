@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-md mx-auto px-4 py-16">
+    <div class="bg-white rounded-3xl border border-stone-200 shadow-xl overflow-hidden p-6 sm:p-10 space-y-6">
+        
+        <!-- Header -->
+        <div class="text-center space-y-2">
+            <div class="w-12 h-12 rounded-2xl bg-coffee-100 text-coffee-800 flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-mug-saucer"></i>
+            </div>
+            <h1 class="text-2xl font-serif font-bold text-coffee-950">Welcome Back</h1>
+            <p class="text-xs text-stone-500">Sign in to your Modern Coffee Shop account.</p>
+        </div>
+
+        <!-- Login Form -->
+        <form method="post" action="{% url 'accounts:login' %}{% if next %}?next={{ next }}{% endif %}" class="space-y-4">
+            {% csrf_token %}
+
+            {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+            {% endif %}
+
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-stone-700 uppercase tracking-wider">Username or Email</label>
+                {{ form.username }}
+            </div>
+
+            <div class="space-y-1">
+                <div class="flex justify-between items-center">
+                    <label class="text-xs font-bold text-stone-700 uppercase tracking-wider">Password</label>
+                </div>
+                {{ form.password }}
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-stone-600 pt-1">
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    {{ form.remember_me }}
+                    <span>Remember me for 2 weeks</span>
+                </label>
+            </div>
+
+            <div class="pt-2">
+                <button type="submit" class="w-full py-3.5 rounded-2xl bg-coffee-800 hover:bg-coffee-900 text-white font-bold text-sm shadow-md hover:shadow-lg transition">
+                    Sign In
+                </button>
+            </div>
+        </form>
+
+        <!-- Quick Demo Credentials Box -->
+        <div class="p-3.5 rounded-2xl bg-coffee-50 border border-coffee-200/80 text-xs text-stone-600 space-y-1">
+            <span class="font-bold text-coffee-900 block"><i class="fa-solid fa-key text-amber-600 mr-1"></i>Demo Logins:</span>
+            <div class="flex justify-between">
+                <span>Customer:</span>
+                <span class="font-mono text-stone-800">barista_john / coffee12345</span>
+            </div>
+            <div class="flex justify-between">
+                <span>Staff/Admin:</span>
+                <span class="font-mono text-stone-800">admin / admin12345</span>
+            </div>
+        </div>
+
+        <div class="text-center text-xs text-stone-500 pt-2 border-t border-stone-100">
+            Don't have an account? 
+            <a href="{% url 'accounts:register' %}" class="text-amber-700 font-bold hover:underline">
+                Create one now
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

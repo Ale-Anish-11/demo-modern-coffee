@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    
+    <div class="mb-8">
+        <h1 class="text-3xl font-serif font-bold text-coffee-950">Customer Profile & Settings</h1>
+        <p class="text-sm text-stone-500 mt-1">Manage your personal information, contact address, and account details.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left: User Identity Card (4 cols) -->
+        <div class="lg:col-span-4 space-y-6">
+            <div class="bg-white rounded-3xl border border-stone-200 shadow-sm p-6 text-center space-y-4">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-coffee-800 to-coffee-950 text-white font-serif font-bold text-2xl flex items-center justify-center mx-auto shadow-md">
+                    {{ user.first_name|default:user.username|make_list|first|upper }}
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-stone-900">{{ user.get_full_name|default:user.username }}</h2>
+                    <p class="text-xs text-stone-400">@{{ user.username }}</p>
+                </div>
+
+                <div class="pt-4 border-t border-stone-100 text-left space-y-3 text-xs">
+                    <div>
+                        <span class="text-stone-400 block font-medium">Customer ID</span>
+                        <span class="font-mono font-bold text-stone-800">#MCS-CUST-{{ user.id }}</span>
+                    </div>
+                    <div>
+                        <span class="text-stone-400 block font-medium">Member Since</span>
+                        <span class="font-bold text-stone-800">{{ user.date_joined|date:"F d, Y" }}</span>
+                    </div>
+                    <div>
+                        <span class="text-stone-400 block font-medium">Account Role</span>
+                        <span class="inline-block mt-0.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold {% if user.is_staff %}bg-purple-100 text-purple-800{% else %}bg-amber-100 text-amber-900{% endif %}">
+                            {% if user.is_staff %}Staff / Owner{% else %}Coffee Club Customer{% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <a href="{% url 'loyalty:rewards' %}" class="w-full py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold transition flex items-center justify-center space-x-1 border border-amber-200">
+                        <i class="fa-solid fa-award text-amber-600"></i>
+                        <span>View Loyalty Points ({{ user_loyalty_points }} pts)</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Edit Profile Form (8 cols) -->
+        <div class="lg:col-span-8">
+            <div class="bg-white rounded-3xl border border-stone-200 shadow-sm p-6 sm:p-8 space-y-6">
+                
+                <h3 class="text-xl font-serif font-bold text-coffee-950 border-b border-stone-100 pb-4">
+                    Update Personal Information
+                </h3>
+
+                <form method="post" action="{% url 'accounts:profile' %}" class="space-y-4">
+                    {% csrf_token %}
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1 sm:col-span-2">
+                            <label class="text-xs font-bold text-stone-700 uppercase tracking-wider">Full Name *</label>
+                            {{ form.full_name }}
+                            {% if form.full_name.errors %}
+                            <p class="text-xs text-rose-600 mt-1">{{ form.full_name.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-stone-700 uppercase tracking-wider">Email Address *</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <p class="text-xs text-rose-600 mt-1">{{ form.email.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-stone-700 uppercase tracking-wider">Contact Phone</label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                            <p class="text-xs text-rose-600 mt-1">{{ form.phone.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="space-y-1 sm:col-span-2">
+                            <label class="text-xs font-bold text-stone-700 uppercase tracking-wider">Primary Address / Area</label>
+                            {{ form.address }}
+                            {% if form.address.errors %}
+                            <p class="text-xs text-rose-600 mt-1">{{ form.address.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Security notice -->
+                    <div class="p-3.5 rounded-2xl bg-stone-50 border border-stone-200 text-xs text-stone-500">
+                        <i class="fa-solid fa-lock text-stone-400 mr-1.5"></i>
+                        Sensitive system attributes (Account ID, Points Balance, Payment Statuses) are securely protected and managed by the system.
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" class="px-6 py-3.5 rounded-2xl bg-coffee-800 hover:bg-coffee-900 text-white font-bold text-sm shadow-md hover:shadow-lg transition">
+                            Save Profile Changes
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

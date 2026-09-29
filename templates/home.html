@@ -1,0 +1,355 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative hero-pattern text-white overflow-hidden py-16 sm:py-24 lg:py-32">
+    <div class="absolute inset-0 bg-gradient-to-r from-coffee-950 via-coffee-950/90 to-coffee-900/60 z-0"></div>
+    
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Hero Left Text Content -->
+            <div class="lg:col-span-7 space-y-6 sm:space-y-8">
+                <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs sm:text-sm font-semibold tracking-wide">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                    <span>Himalayan Artisan Beans & Micro-Roastery</span>
+                </div>
+                
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-white tracking-tight leading-tight">
+                    Every Sip Tells an <br>
+                    <span class="bg-gradient-to-r from-amber-200 via-amber-400 to-coffee-300 bg-clip-text text-transparent">Artisanal Story</span>
+                </h1>
+                
+                <p class="text-base sm:text-lg text-coffee-200/90 max-w-xl font-normal leading-relaxed">
+                    Welcome to <strong class="text-white">Modern Coffee Shop</strong>. Experience handcrafted specialty espresso, slow-steeped nitro cold brews, and fresh morning pastries with seamless digital ordering, counter pickup, and Khalti rewards.
+                </p>
+                
+                <!-- Hero Action Buttons -->
+                <div class="flex flex-wrap gap-4 pt-2">
+                    <a href="{% url 'products:list' %}" class="inline-flex items-center justify-center px-7 py-4 rounded-2xl bg-amber-500 text-coffee-950 font-bold text-base hover:bg-amber-400 shadow-lg shadow-amber-500/20 hover:scale-[1.02] transition duration-200 group">
+                        <i class="fa-solid fa-mug-hot mr-2.5 text-lg group-hover:rotate-12 transition-transform"></i>
+                        Order Your Favorite Coffee
+                    </a>
+                    <a href="{% url 'loyalty:rewards' %}" class="inline-flex items-center justify-center px-6 py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-semibold text-base border border-white/20 backdrop-blur-sm transition duration-200">
+                        <i class="fa-solid fa-award mr-2.5 text-amber-400"></i>
+                        Earn Rewards
+                    </a>
+                </div>
+
+                <!-- Trust Badges -->
+                <div class="pt-6 border-t border-coffee-800/80 grid grid-cols-3 gap-4 text-center sm:text-left">
+                    <div>
+                        <div class="text-2xl sm:text-3xl font-serif font-bold text-amber-400">100%</div>
+                        <div class="text-xs text-stone-400">Organic Arabica</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl sm:text-3xl font-serif font-bold text-amber-400">10 pts</div>
+                        <div class="text-xs text-stone-400">Per Rs. 100 Spent</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl sm:text-3xl font-serif font-bold text-amber-400">4.9 ★</div>
+                        <div class="text-xs text-stone-400">Over 500+ Reviews</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Right Image Showcase -->
+            <div class="lg:col-span-5 relative">
+                <div class="relative mx-auto max-w-md lg:max-w-none">
+                    <!-- Glow behind card -->
+                    <div class="absolute -inset-1 bg-gradient-to-r from-amber-500 to-coffee-600 rounded-3xl blur-xl opacity-30 animate-pulse"></div>
+                    
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-coffee-900/60 backdrop-blur-md">
+                        <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80" alt="Artisan Latte Pour" class="w-full h-80 sm:h-96 object-cover object-center group-hover:scale-105 transition duration-500">
+                        <div class="p-6 bg-gradient-to-t from-coffee-950 via-coffee-950/80 to-transparent absolute bottom-0 inset-x-0">
+                            <span class="px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-semibold border border-amber-500/30">Barista Special</span>
+                            <h3 class="text-xl font-serif font-bold text-white mt-2">Golden Velvet Cappuccino</h3>
+                            <p class="text-xs text-coffee-200 mt-1">Double shot espresso, velvety microfoam & Ceylon cinnamon dusting.</p>
+                            <div class="flex items-center justify-between mt-3">
+                                <span class="text-lg font-bold text-amber-400">Rs. 240.00</span>
+                                <a href="{% url 'products:detail' 'golden-velvet-cappuccino' %}" class="text-xs font-semibold text-white bg-coffee-800 hover:bg-amber-600 px-3.5 py-2 rounded-xl transition">
+                                    Quick View →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Loyalty & Rewards Highlight Bar -->
+<section class="bg-gradient-to-r from-amber-700 via-amber-600 to-coffee-700 text-white py-6 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-amber-200 text-2xl flex-shrink-0">
+                    <i class="fa-solid fa-gift"></i>
+                </div>
+                <div>
+                    <h4 class="font-serif font-bold text-lg text-white">Join the Modern Coffee Loyalty Club</h4>
+                    <p class="text-xs sm:text-sm text-amber-100">Every Rs. 100 spent gives you 10 points. Redeem points directly for instant order discounts!</p>
+                </div>
+            </div>
+            <div>
+                {% if user.is_authenticated %}
+                <a href="{% url 'loyalty:rewards' %}" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-white text-coffee-900 font-bold text-sm hover:bg-amber-50 transition shadow">
+                    <i class="fa-solid fa-wallet mr-2 text-amber-600"></i> My Points: {{ user_loyalty_points }} pts
+                </a>
+                {% else %}
+                <a href="{% url 'accounts:register' %}" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-white text-coffee-900 font-bold text-sm hover:bg-amber-50 transition shadow">
+                    <i class="fa-solid fa-user-plus mr-2 text-amber-600"></i> Register & Get 50 Bonus Points
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Coffee Categories Grid -->
+<section class="py-16 sm:py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+            <span class="text-xs font-bold uppercase tracking-widest text-amber-700">Artisan Craft</span>
+            <h2 class="text-3xl sm:text-4xl font-serif font-bold text-coffee-950 mt-1">Explore By Category</h2>
+            <p class="text-sm text-stone-600 mt-2">From intense single-origin espressos to hand-laminated French pastries, discover your daily indulgence.</p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
+            {% for cat in categories %}
+            <a href="{% url 'products:category' cat.slug %}" class="group p-5 rounded-2xl bg-coffee-50/60 hover:bg-coffee-100/70 border border-coffee-200/60 hover:border-amber-400 text-center transition-all duration-200 hover:-translate-y-1 shadow-sm hover:shadow-md flex flex-col items-center">
+                <div class="w-14 h-14 rounded-2xl bg-white shadow flex items-center justify-center text-amber-700 group-hover:bg-amber-600 group-hover:text-white transition-colors duration-200 text-xl mb-3">
+                    <i class="fa-solid {{ cat.icon|default:'fa-mug-saucer' }}"></i>
+                </div>
+                <h3 class="font-serif font-bold text-stone-900 text-sm group-hover:text-coffee-800 transition">{{ cat.name }}</h3>
+                <span class="text-[11px] text-stone-500 mt-1">View Items →</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Coffee Products -->
+<section class="py-16 sm:py-20 bg-coffee-50 border-y border-stone-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-amber-700">Handpicked Selections</span>
+                <h2 class="text-3xl sm:text-4xl font-serif font-bold text-coffee-950 mt-1">Featured Roasts & Specialties</h2>
+                <p class="text-sm text-stone-600 mt-1">Specially prepared with locally sourced beans and authentic extraction methods.</p>
+            </div>
+            <a href="{% url 'products:list' %}" class="inline-flex items-center text-sm font-bold text-coffee-800 hover:text-amber-700 transition">
+                View Full Menu <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for product in featured_products %}
+            <div class="bg-white rounded-3xl overflow-hidden border border-stone-200/80 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col group">
+                <!-- Product Image -->
+                <div class="relative h-56 overflow-hidden bg-stone-100">
+                    <img src="{{ product.get_image_url }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-600 text-white shadow">
+                        Featured
+                    </span>
+                    <span class="absolute top-3 right-3 px-2 py-0.5 rounded-lg text-xs font-semibold bg-white/90 text-stone-800 backdrop-blur-sm shadow flex items-center">
+                        <i class="fa-solid fa-star text-amber-500 mr-1 text-[11px]"></i> {{ product.rating }}
+                    </span>
+                </div>
+
+                <!-- Product Content -->
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                        <span class="text-[11px] font-bold text-amber-700 uppercase tracking-wider">{{ product.category.name }}</span>
+                        <h3 class="font-serif font-bold text-lg text-stone-900 group-hover:text-coffee-800 transition mt-0.5 line-clamp-1">
+                            <a href="{% url 'products:detail' product.slug %}">{{ product.name }}</a>
+                        </h3>
+                        <p class="text-xs text-stone-500 mt-2 line-clamp-2 leading-relaxed">{{ product.description }}</p>
+                    </div>
+
+                    <div class="mt-5 pt-4 border-t border-stone-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-stone-400 block">Price</span>
+                            <span class="text-lg font-bold text-coffee-950 font-sans">Rs. {{ product.price }}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <a href="{% url 'products:detail' product.slug %}" class="p-2.5 rounded-xl border border-stone-200 text-stone-600 hover:text-coffee-800 hover:border-coffee-700 transition" title="View Details">
+                                <i class="fa-solid fa-eye text-sm"></i>
+                            </a>
+                            <form action="{% url 'orders:cart_add' product.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="p-2.5 rounded-xl bg-coffee-800 hover:bg-amber-600 text-white shadow transition flex items-center justify-center" title="Add to Cart">
+                                    <i class="fa-solid fa-bag-shopping text-sm"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Popular Coffee & Bakery Items -->
+<section class="py-16 sm:py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+            <span class="text-xs font-bold uppercase tracking-widest text-amber-700">Community Favorites</span>
+            <h2 class="text-3xl sm:text-4xl font-serif font-bold text-coffee-950 mt-1">Most Popular at the Counter</h2>
+            <p class="text-sm text-stone-600 mt-2">Loved by hundreds of coffee enthusiasts across town.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for product in popular_products %}
+            <div class="bg-coffee-50/50 rounded-2xl p-4 border border-stone-200/70 hover:border-amber-400 transition-all duration-200 flex space-x-4 items-center group">
+                <div class="w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 bg-stone-200 relative">
+                    <img src="{{ product.get_image_url }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                </div>
+                <div class="flex-1 min-w-0">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-amber-700">{{ product.category.name }}</span>
+                    <h3 class="font-serif font-bold text-base text-stone-900 group-hover:text-coffee-800 transition truncate">
+                        <a href="{% url 'products:detail' product.slug %}">{{ product.name }}</a>
+                    </h3>
+                    <div class="flex items-center space-x-2 text-xs text-stone-500 mt-1">
+                        <span><i class="fa-solid fa-star text-amber-500 mr-0.5 text-[10px]"></i> {{ product.rating }}</span>
+                        <span>•</span>
+                        <span>{{ product.brew_time }}</span>
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="font-bold text-sm text-coffee-950">Rs. {{ product.price }}</span>
+                        <form action="{% url 'orders:cart_add' product.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="px-3 py-1.5 rounded-lg bg-coffee-800 hover:bg-amber-600 text-white text-xs font-semibold transition shadow-sm">
+                                + Add
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="py-16 sm:py-24 bg-coffee-950 text-white relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            
+            <div class="space-y-6">
+                <span class="text-xs font-bold uppercase tracking-widest text-amber-400">Our Heritage & Craft</span>
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-white leading-tight">
+                    Rooted in Pure Passion, Roasted with Precision
+                </h2>
+                <p class="text-stone-300 text-sm sm:text-base leading-relaxed">
+                    Founded with a passion for bringing high-altitude specialty coffee to discerning palates, <strong>Modern Coffee Shop</strong> combines world-class brewing techniques with warm Nepalese hospitality.
+                </p>
+                <div class="grid grid-cols-2 gap-6 pt-2">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0 text-lg">
+                            <i class="fa-solid fa-seedling"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">Direct Trade Beans</h4>
+                            <p class="text-xs text-stone-400 mt-0.5">Sourced ethically from organic farmers in high-altitude valleys.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0 text-lg">
+                            <i class="fa-solid fa-fire-burner"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">Daily Micro-Roasts</h4>
+                            <p class="text-xs text-stone-400 mt-0.5">Freshly roasted in small batches to preserve nuanced aromas.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <a href="{% url 'about' %}" class="inline-flex items-center text-sm font-semibold text-amber-400 hover:text-amber-300">
+                        Read Our Full Story <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="relative">
+                <div class="grid grid-cols-2 gap-4">
+                    <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=600&q=80" alt="Coffee Roasting" class="rounded-2xl h-64 object-cover shadow-lg">
+                    <img src="https://images.unsplash.com/photo-1509785307050-d4066910ec1e?auto=format&fit=crop&w=600&q=80" alt="Coffee Pour" class="rounded-2xl h-64 object-cover shadow-lg mt-8">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Customer Testimonials -->
+<section class="py-16 sm:py-20 bg-stone-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+            <span class="text-xs font-bold uppercase tracking-widest text-amber-700">What People Say</span>
+            <h2 class="text-3xl font-serif font-bold text-coffee-950 mt-1">Loved by Coffee Devotees</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-3xl border border-stone-200/80 shadow-sm space-y-4">
+                <div class="flex text-amber-500 text-xs space-x-1">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p class="text-sm text-stone-600 italic">"The Himalayan Double Espresso is the best espresso in town. Ordering online with Khalti and picking it up without waiting is a lifesaver on busy mornings!"</p>
+                <div class="flex items-center space-x-3 pt-2">
+                    <div class="w-10 h-10 rounded-full bg-coffee-200 flex items-center justify-center font-bold text-coffee-900 text-sm">SP</div>
+                    <div>
+                        <h4 class="text-xs font-bold text-stone-900">Sujan Pokhrel</h4>
+                        <p class="text-[11px] text-stone-400">Software Engineer</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-3xl border border-stone-200/80 shadow-sm space-y-4">
+                <div class="flex text-amber-500 text-xs space-x-1">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p class="text-sm text-stone-600 italic">"The Vanilla Bean Oat Latte with a butter croissant is perfection. Plus I already earned 90 points which gave me a discount on my next order."</p>
+                <div class="flex items-center space-x-3 pt-2">
+                    <div class="w-10 h-10 rounded-full bg-amber-200 flex items-center justify-center font-bold text-amber-900 text-sm">AS</div>
+                    <div>
+                        <h4 class="text-xs font-bold text-stone-900">Aayusha Sharma</h4>
+                        <p class="text-[11px] text-stone-400">Creative Designer</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-3xl border border-stone-200/80 shadow-sm space-y-4">
+                <div class="flex text-amber-500 text-xs space-x-1">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p class="text-sm text-stone-600 italic">"Clean website, great espresso aroma, and having both Khalti and Pay at Counter makes it so easy. 10/10 recommended!"</p>
+                <div class="flex items-center space-x-3 pt-2">
+                    <div class="w-10 h-10 rounded-full bg-stone-200 flex items-center justify-center font-bold text-stone-900 text-sm">RK</div>
+                    <div>
+                        <h4 class="text-xs font-bold text-stone-900">Rohan Karki</h4>
+                        <p class="text-[11px] text-stone-400">Coffee Enthusiast</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Banner -->
+<section class="py-16 bg-gradient-to-r from-coffee-900 to-coffee-950 text-white text-center">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <h2 class="text-3xl sm:text-4xl font-serif font-bold text-white">Ready for Your Next Cup of Excellence?</h2>
+        <p class="text-coffee-200 text-sm sm:text-base max-w-xl mx-auto">Browse our full menu of freshly extracted coffees, artisanal pastries, and earn loyalty points with every order.</p>
+        <div class="pt-2">
+            <a href="{% url 'products:list' %}" class="inline-flex items-center px-8 py-4 rounded-2xl bg-amber-500 hover:bg-amber-400 text-coffee-950 font-bold text-base transition shadow-lg shadow-amber-500/20">
+                <i class="fa-solid fa-bag-shopping mr-2"></i> Order Your Favorite Coffee Now
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
