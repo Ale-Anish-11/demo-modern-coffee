@@ -208,11 +208,10 @@ ALLOWED_HOSTS=127.0.0.1,localhost,*
 DATABASE_ENGINE=django.db.backends.sqlite3
 DATABASE_NAME=db.sqlite3
 
-# Khalti Sandbox Credentials
-KHALTI_PUBLIC_KEY=test_public_key_77ca48e7786144e0bcf00e572049e29f
-KHALTI_SECRET_KEY=test_secret_key_26b206e987c94488828bbf13e51d141e
-KHALTI_INITIATE_URL=https://a.khalti.com/api/v2/epayment/initiate/
-KHALTI_LOOKUP_URL=https://a.khalti.com/api/v2/epayment/lookup/
+# Khalti Gateway Configuration (KPG-2 ePayment)
+KHALTI_BASE_URL=https://dev.khalti.com/api/v2/
+KHALTI_PUBLIC_KEY=your_khalti_public_key_here
+KHALTI_SECRET_KEY=your_khalti_secret_key_here
 
 # Loyalty Program
 LOYALTY_POINTS_PER_HUNDRED=10
@@ -252,27 +251,63 @@ Open your browser and navigate to: **`http://127.0.0.1:8000/`**
 
 ---
 
-## 💳 Payment Gateway: Khalti Sandbox Flow
+## 💳 Payment Gateway: Khalti KPG-2 Integration Guide
 
+### 1. Obtaining Khalti Sandbox Credentials
+1. Register/Login to the Khalti Test Merchant Admin Portal: **[https://test-admin.khalti.com](https://test-admin.khalti.com)**
+2. In the merchant dashboard, navigate to **Keys** or **API Credentials**.
+3. Copy your **Live Secret Key** (starts with `test_secret_key_...` in test environment) and **Public Key**.
+
+### 2. Configure `.env`
+Open your `.env` file and set:
+```env
+# Khalti Gateway Sandbox Configuration
+KHALTI_BASE_URL=https://dev.khalti.com/api/v2/
+KHALTI_PUBLIC_KEY=your_khalti_test_public_key
+KHALTI_SECRET_KEY=your_khalti_test_secret_key
+```
+
+### 3. Testing with Official Khalti Test Credentials
+When redirected to Khalti's payment portal, enter the official sandbox test credentials:
+- **Test Mobile Number**: `9800000000` (or `9800000001`, `9800000002`, `9800000003`, `9800000004`, `9800000005`)
+- **Test MPIN**: `1111`
+- **Test OTP (Login & Confirmation)**: `987654`
+
+### 4. End-to-End Payment Flow
 1. Customer proceeds to checkout with items in cart.
-2. Selects **Pay with Khalti**.
-3. Backend calls Khalti v2 ePayment initiation API (`https://a.khalti.com/api/v2/epayment/initiate/`) passing secret key from `.env`.
-4. Customer completes the test payment in the sandbox portal.
-5. Khalti redirects to `payments:khalti_verify` with `pidx`, `status`, and `purchase_order_id`.
-6. Django backend calls Khalti `lookup/` API to verify payment integrity before marking the order as `PAID`.
-7. Once verified:
-   - Order payment status becomes `PAID`
-   - Order status becomes `CONFIRMED`
-   - Transaction ID is recorded
-   - Customer is credited with loyalty points (10 points per Rs. 100 spent)
-   - Cart is cleared
-   - Customer receives the confirmation receipt.
+2. Selects **Pay with Khalti** and clicks **Place Coffee Order**.
+3. Order is created in `PENDING` status; stock is validated but retained until verified payment.
+4. Django initiates Khalti v2 ePayment session (`https://dev.khalti.com/api/v2/epayment/initiate/`).
+5. Customer is redirected directly to Khalti's secure checkout page.
+6. Customer completes payment with their Khalti test wallet.
+7. Khalti redirects back to Django (`payments:khalti_verify`) with `pidx`, `status`, and `purchase_order_id`.
+8. Backend verification: Django queries Khalti's `lookup/` API server-to-server with `Authorization: Key <secret_key>`.
+9. The transaction status is verified as `Completed`, and the amount in paisa is confirmed against the order total.
+10. Upon verification (atomic & idempotent):
+    - Order `payment_status` becomes `PAID`
+    - Order `order_status` becomes `CONFIRMED`
+    - Stock is deducted for all order items
+    - Payment transaction reference ID and raw response are recorded
+    - Loyalty points are awarded to the customer
+    - Cart is cleared
+    - Customer is redirected to the order confirmation page.
+
+### 5. Switching from Sandbox to Production
+When ready to accept live payments:
+1. Register and complete KYC on the production merchant dashboard: **[https://admin.khalti.com](https://admin.khalti.com)**
+2. In `.env`, change:
+   ```env
+   KHALTI_BASE_URL=https://khalti.com/api/v2/
+   KHALTI_PUBLIC_KEY=live_public_key_...
+   KHALTI_SECRET_KEY=live_secret_key_...
+   ```
+3. Restart your Django application server.
 
 ---
 
 ## 🧪 Running the Automated Test Suite
 
-The project includes unit and integration tests covering authentication, catalog, shopping cart, checkout, Khalti verification, loyalty calculations, and object-level authorization:
+The project includes unit and integration tests covering authentication, catalog, shopping cart, checkout, Khalti verification lifecycle (successful, failed, cancelled, amount mismatch, duplicate callback, already paid, invalid pidx, network errors), loyalty calculations, and object-level authorization:
 
 ```bash
 python manage.py test
@@ -280,7 +315,7 @@ python manage.py test
 
 Expected output:
 ```text
-Ran 19 tests in ~20s
+Ran 26 tests in ~40s
 OK
 ```
 

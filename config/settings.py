@@ -137,11 +137,12 @@ MESSAGE_TAGS = {
 # Cart Session ID
 CART_SESSION_ID = 'modern_coffee_cart'
 
-# Khalti Gateway Sandbox Configuration
+# Khalti Gateway Configuration (KPG-2 ePayment)
+KHALTI_BASE_URL = os.getenv('KHALTI_BASE_URL', 'https://dev.khalti.com/api/v2/')
 KHALTI_PUBLIC_KEY = os.getenv('KHALTI_PUBLIC_KEY', 'test_public_key_77ca48e7786144e0bcf00e572049e29f')
 KHALTI_SECRET_KEY = os.getenv('KHALTI_SECRET_KEY', 'test_secret_key_26b206e987c94488828bbf13e51d141e')
-KHALTI_INITIATE_URL = os.getenv('KHALTI_INITIATE_URL', 'https://dev.khalti.com/api/v2/epayment/initiate/')
-KHALTI_LOOKUP_URL = os.getenv('KHALTI_LOOKUP_URL', 'https://dev.khalti.com/api/v2/epayment/lookup/')
+KHALTI_INITIATE_URL = os.getenv('KHALTI_INITIATE_URL', f"{KHALTI_BASE_URL.rstrip('/')}/epayment/initiate/")
+KHALTI_LOOKUP_URL = os.getenv('KHALTI_LOOKUP_URL', f"{KHALTI_BASE_URL.rstrip('/')}/epayment/lookup/")
 
 # Loyalty System Configuration
 # Every Rs. 100 spent gives 10 points

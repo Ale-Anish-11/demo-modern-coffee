@@ -31,6 +31,20 @@ def initiate_khalti_payment(order, return_url, website_url):
         }
     }
 
+    # Optional item breakdown for Khalti checkout UI
+    items = list(order.items.select_related('product').all())
+    if items:
+        payload["product_details"] = [
+            {
+                "identity": str(item.product.id),
+                "name": item.product.name,
+                "total_price": int(Decimal(str(item.subtotal)) * 100),
+                "quantity": item.quantity,
+                "unit_price": int(Decimal(str(item.unit_price)) * 100)
+            }
+            for item in items
+        ]
+
     headers = {
         "Authorization": f"Key {settings.KHALTI_SECRET_KEY}",
         "Content-Type": "application/json"
@@ -41,18 +55,20 @@ def initiate_khalti_payment(order, return_url, website_url):
             settings.KHALTI_INITIATE_URL,
             json=payload,
             headers=headers,
-            timeout=12
+            timeout=15
         )
         data = response.json()
         if response.status_code == 200 and 'payment_url' in data:
-            # Store initial pending payment record
-            Payment.objects.create(
+            # Store or update initial pending payment record (idempotent for retries)
+            Payment.objects.update_or_create(
                 order=order,
                 payment_method='KHALTI',
-                transaction_id=data.get('pidx'),
-                amount=order.total_amount,
-                status='PENDING',
-                raw_response=data
+                defaults={
+                    'transaction_id': data.get('pidx'),
+                    'amount': order.total_amount,
+                    'status': 'PENDING',
+                    'raw_response': data
+                }
             )
             return {
                 'success': True,
@@ -88,12 +104,14 @@ def verify_khalti_payment(pidx):
             settings.KHALTI_LOOKUP_URL,
             json=payload,
             headers=headers,
-            timeout=12
+            timeout=15
         )
         data = response.json()
         if response.status_code == 200:
             return {'success': True, 'data': data}
         else:
+            logger.warning(f"Khalti lookup API response: {response.status_code} - {data}")
             return {'success': False, 'error': data.get('detail') or 'Verification failed with status code'}
     except Exception as e:
+        logger.error(f"Khalti lookup connection error: {str(e)}")
         return {'success': False, 'error': str(e)}

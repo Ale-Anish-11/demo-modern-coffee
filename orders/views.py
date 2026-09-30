@@ -154,8 +154,10 @@ def checkout_view(request):
                     prod = Product.objects.select_for_update().get(id=item['product'].id)
                     if prod.stock < item['quantity']:
                         raise ValueError(f"Sorry, {prod.name} ran out of stock just now.")
-                    prod.stock -= item['quantity']
-                    prod.save(update_fields=['stock'])
+                    # Deduct stock immediately for Pay at Counter; for Khalti, stock is deducted upon verified payment
+                    if payment_method == 'COUNTER':
+                        prod.stock -= item['quantity']
+                        prod.save(update_fields=['stock'])
 
                 # Create Order
                 order = Order.objects.create(
